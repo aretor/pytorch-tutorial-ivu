@@ -92,8 +92,8 @@ if __name__ == '__main__':
         torch.manual_seed(config['seed'])
 
     transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5),
-                                                         (0.5, 0.5, 0.5))])
+                                    transforms.Normalize((0.5,),
+                                                         (0.5,))])
 
     model = CNN()
     criterion = nn.CrossEntropyLoss()

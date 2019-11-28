@@ -61,9 +61,10 @@ class Trainer(object):
 
     def train(self, epochs=10):
         print('Initial accuracy: {}'.format(self.evaluate()))
-        for epoch in tqdm(range(epochs), total=len(self.train_loader)):
+        for epoch in range(epochs):
             self.model.train()  # set the model to training mode
-            for images, labels in self.train_loader:
+            for images, labels in tqdm(self.train_loader,
+                                       total=len(self.train_loader)):
                 self.optimizer.zero_grad()  # don't forget this line!
                 images, labels = images.to(self.device), labels.to(self.device)
 
@@ -78,7 +79,8 @@ class Trainer(object):
         self.model.eval()  # set the model to eval mode
         total = 0
 
-        for images, labels in tqdm(self.test_loader, len(self.test_loader)):
+        for images, labels in tqdm(self.test_loader,
+                                   total=len(self.test_loader)):
             images, labels = images.to(self.device), labels.to(self.device)
 
             output = self.softmax(self.model(images))
@@ -104,8 +106,8 @@ if __name__ == '__main__':
         torch.manual_seed(config['seed'])
 
     transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5),
-                                                         (0.5, 0.5, 0.5))])
+                                    transforms.Normalize((0.5,),
+                                                         (0.5,))])
 
     model = MLP()
     criterion = nn.CrossEntropyLoss()
@@ -113,7 +115,6 @@ if __name__ == '__main__':
                           momentum=config['momentum'],
                           weight_decay=config['weight_decay'])
 
-    batch_size = 8
     train_loader = DataLoader(
         torchvision.datasets.MNIST('./mnist', download=True, train=True,
                                    transform=transform),
